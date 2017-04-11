@@ -12,7 +12,11 @@ public class Order_Line {
     private String recipe;
     private int quantity=0;
 
-    public void setLine(Recipe nLine){this.line=nLine;}
+    public void setLine(Recipe nLine)
+    {
+        this.line=nLine;
+        this.recipe=nLine.getRecipe_id();
+    }
     public void setQuantity(int nQuantity){this.quantity=nQuantity;}
     public void setOrderId(String nOrderId){this.order=nOrderId;}
     public void setId(String nId){this.id=nId;}

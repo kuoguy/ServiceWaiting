@@ -31,6 +31,7 @@ public class CreateOrder extends AppCompatActivity {
 
     private GridView gridview;
     private int navigation;
+    private Order currentOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,8 @@ public class CreateOrder extends AppCompatActivity {
         }
 
         navigation=0; //Initialise grid navigation count
+
+        currentOrder = new Order(0, 0); //Create a new order
 
         GetRecipeCategory getRecipe = new GetRecipeCategory();
         getRecipe.execute("");
@@ -94,13 +97,24 @@ public class CreateOrder extends AppCompatActivity {
                     getRecipeSubCategory.execute(selectedRecipeCategory);
                     navigation++;
                 }
-                if(navigation==1)
+                else if(navigation==1)
                 {
                     Recipe_SubCategory[] selectedRecipeSubCategory= new Recipe_SubCategory[1];
                     selectedRecipeSubCategory[0]=recipeSubCategoryArrayList.get(position);
                     GetRecipe getRecipe = new GetRecipe();
                     getRecipe.execute(selectedRecipeSubCategory);
                     navigation++;
+                }
+                else if(navigation==2)
+                {
+                    Recipe selectedRecipe = recipeArrayList.get(position);
+                    Order_Line newLine = new Order_Line();
+                    newLine.setLine(selectedRecipe);
+                    newLine.setQuantity(1);
+                    newLine.setOrderId(currentOrder.getOrder_id());
+                    currentOrder.addLine(newLine);
+                    Toast.makeText(getActivity(), "Item: "+selectedRecipe.getName()+" added to Order",
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -120,17 +134,38 @@ public class CreateOrder extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                //TextView recipeNameTV = (TextView) findViewById(R.id.editTextRecipeName);
-                //String[] recipeName = new String[1]; // contains recipe name from onscreen editText
-                //recipeName[0]=recipeNameTV.getText().toString();
-                //Recipe[] recipeParam = new Recipe[1];
-                //recipeParam[0]=global_recipeSelected;
-                //SetRecipeLinesTask setRecipeLinesTask = new SetRecipeLinesTask();
-                //setRecipeLinesTask.execute(recipeParam); //Passes parameter containing name
+                if(currentOrder.getSize()>0)
+                {
+                    Order[] toSave = new Order[1];
+                    toSave[0] = currentOrder;
+                    SetOrderTask setOrderTask = new SetOrderTask();
+                    setOrderTask.execute(toSave);
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), "Order Empty- Not Saved",
+                            Toast.LENGTH_LONG).show();
+                }
                 return true;
             case R.id.action_home:
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
+                return true;
+            case android.R.id.home: //Handle back button
+                if(navigation==0)
+                {
+                    onBackPressed(); //Return to home screen
+                }
+                else if(navigation==1)
+                {
+                    navigation--;
+                    setRecipeCategoryAdapter(); //Return to category view
+                }
+                else if(navigation==2)
+                {
+                    navigation--;
+                    setRecipeSubCategoryAdapter(); //Return to subcategory view
+                }
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -209,6 +244,23 @@ public class CreateOrder extends AppCompatActivity {
             setRecipeSubCategoryAdapter();
         }
 
+    }
+
+    private class SetOrderTask extends AsyncTask<Order[], Object, Boolean>
+    {
+        @Override
+        protected Boolean doInBackground(Order[]...params)
+        {
+            Order toSave[] = params[0];
+            cloudDB.addOrder(mClient, toSave[0]);
+            return true;
+        }
+        @Override
+        protected void onPostExecute(Boolean result)
+        {
+            Toast.makeText(getActivity(), "Order Saved",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
 }

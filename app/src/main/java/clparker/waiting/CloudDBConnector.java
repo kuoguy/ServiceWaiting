@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceJsonTable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -311,6 +312,7 @@ public class CloudDBConnector {
         orderObject.addProperty("location", Integer.toString(newOrder.getLocation()));
         orderObject.addProperty("table", Integer.toString(newOrder.getTable()));
         orderObject.addProperty("createdTime", newOrder.getCreatedTime());
+        orderObject.addProperty("order_id", newOrder.getOrder_id());
 
         try
         {
@@ -323,12 +325,12 @@ public class CloudDBConnector {
             Log.d("DBCloud", "Order "+exception.getMessage());
         }
 
-        //ArrayList<Order_Line> lines = newOrder.getLines();
+        ArrayList<Order_Line> lines = newOrder.getLines();
 
-        //for(int count=0; count<lines.size(); count++)
-        //{
-        //    addOrderLine(mClient, lines.get(count));
-        //}
+        for(int count=0; count<lines.size(); count++)
+        {
+            addOrderLine(mClient, lines.get(count));
+        }
 
     }
 
