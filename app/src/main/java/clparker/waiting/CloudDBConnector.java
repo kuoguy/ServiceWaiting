@@ -220,6 +220,39 @@ public class CloudDBConnector {
         return measureList;
     }
 */
+
+    List<Recipe_Category> getRecipeCategories(MobileServiceClient mClient)
+    {
+        List<Recipe_Category> catList;
+        try {
+            catList = mClient.getTable(Recipe_Category.class).execute().get();
+        }
+        catch(Exception e)
+        {
+            catList=null;
+            Log.d("CloudDBConnector", "getRecipeCat failed: "+e.getMessage());
+        }
+
+        return catList;
+
+    }
+
+    List<Recipe_SubCategory> getRecipeSubCategories(MobileServiceClient mClient)
+    {
+        List<Recipe_SubCategory> catList;
+        try {
+            catList = mClient.getTable(Recipe_SubCategory.class).execute().get();
+        }
+        catch(Exception e)
+        {
+            catList=null;
+            Log.d("CloudDBConnector", "getRecipeCat failed: "+e.getMessage());
+        }
+
+        return catList;
+
+    }
+
     public List<Recipe> getRecipes(MobileServiceClient mClient)
     {
         List<Recipe> recipeList;

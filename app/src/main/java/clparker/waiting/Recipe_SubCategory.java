@@ -33,4 +33,14 @@ public class Recipe_SubCategory {
     String id;
     String name;
     String recipe_category_id;
+
+    public String getRecipe_category_name() {
+        return recipe_category_name;
+    }
+
+    public void setRecipe_category_name(String recipe_category_name) {
+        this.recipe_category_name = recipe_category_name;
+    }
+
+    String recipe_category_name;
 }
