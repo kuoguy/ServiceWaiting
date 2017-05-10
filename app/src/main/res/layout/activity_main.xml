@@ -5,19 +5,20 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="clparker.waiting.MainActivity"
-    android:layout_weight="1">
+    android:layout_weight="1"
+    android:background="@color/colorPrimary"
+    tools:context="clparker.waiting.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
         android:background="@color/actionbar_color"
         android:elevation="4dp"
-        android:layout_alignParentTop="true"
+        android:minHeight="0dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:layout_height="48dp"
-        android:minHeight="0dp" >
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
     </android.support.v7.widget.Toolbar>
 
@@ -33,34 +34,35 @@
             android:paddingTop="48dp">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="50">
+                android:layout_weight="50"
+                android:orientation="horizontal">
 
                 <ImageButton
+                    android:id="@+id/imageButtonNewOrder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/orderbutton1"
-                    android:id="@+id/imageButtonNewOrder"
                     android:layout_weight="1"
+                    android:background="@color/default_color"
                     android:onClick="sendMessage"
-                    android:background="@color/default_color" />
+                    app:srcCompat="@drawable/orderbutton1" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="50">
+                android:layout_weight="50"
+                android:orientation="horizontal">
 
                 <ImageButton
+                    android:id="@+id/imageButtonModifyOrder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/modifybutton1"
-                    android:id="@+id/imageButtonModifyOrder"
                     android:layout_weight="1"
-                    android:background="@color/default_color" />
+                    android:background="@color/default_color"
+                    android:onClick="sendMessage"
+                    app:srcCompat="@drawable/modifybutton1" />
 
             </LinearLayout>
 
@@ -68,37 +70,22 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="50">
+                android:layout_weight="50"
+                android:orientation="horizontal">
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/modifybutton1"
-                    android:id="@+id/imageButton3"
-                    android:layout_weight="1"
-                    android:background="@color/default_color" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="50">
+                android:layout_weight="50"
+                android:orientation="horizontal">
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/orderbutton1"
-                    android:id="@+id/imageButton4"
-                    android:layout_weight="1"
-                    android:background="@color/default_color" />
             </LinearLayout>
         </TableRow>
 

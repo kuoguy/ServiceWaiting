@@ -3,6 +3,7 @@ package clparker.waiting;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
@@ -32,6 +34,8 @@ public class CreateOrder extends AppCompatActivity {
     private GridView gridview;
     private int navigation;
     private Order currentOrder;
+    private boolean ableRemove=false;
+    private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,8 @@ public class CreateOrder extends AppCompatActivity {
         setContentView(R.layout.activity_create_order);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+
+        spinner = (ProgressBar)findViewById(R.id.progressBar1);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -55,8 +61,10 @@ public class CreateOrder extends AppCompatActivity {
         navigation=0; //Initialise grid navigation count
 
         currentOrder = new Order(0, 0); //Create a new order
+        currentOrder.setStatus("New");
 
         GetRecipeCategory getRecipe = new GetRecipeCategory();
+        spinner.setVisibility(View.VISIBLE);
         getRecipe.execute("");
 
 
@@ -70,12 +78,28 @@ public class CreateOrder extends AppCompatActivity {
         gridview.setOnItemClickListener(mMessageClickedHandler);
 
     }
+    public void setCurrentOrderAdapter()
+    {
+        ArrayList<Order_Line> linesCurrent = currentOrder.getLines();
+
+        ArrayList<Recipe> recipeLinesCurrent = new ArrayList<>();
+
+        for(int count=0; count<linesCurrent.size(); count++)
+            recipeLinesCurrent.add(linesCurrent.get(count).getLine());
+
+        gridview = (GridView) findViewById(R.id.gridViewItems);
+        gridview.setAdapter(new RecipeAdapter(getActivity(), 0, recipeLinesCurrent));
+        gridview.setOnItemClickListener(mMessageClickedHandler);
+        if(!ableRemove)
+            ableRemove=true;
+    }
 
     public void setRecipeCategoryAdapter()
     {
         gridview = (GridView) findViewById(R.id.gridViewItems);
         gridview.setAdapter(new RecipeCategoryAdapter(getActivity(), 0, recipeCategoryArrayList));
         gridview.setOnItemClickListener(mMessageClickedHandler);
+        ableRemove=false;
     }
 
     public void setRecipeSubCategoryAdapter()
@@ -83,17 +107,27 @@ public class CreateOrder extends AppCompatActivity {
         gridview = (GridView) findViewById(R.id.gridViewItems);
         gridview.setAdapter(new RecipeSubCategoryAdapter(getActivity(), 0, recipeSubCategoryArrayList));
         gridview.setOnItemClickListener(mMessageClickedHandler);
+        ableRemove=false;
     }
 
     AdapterView.OnItemClickListener mMessageClickedHandler = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView parent, View v, int position, long id) {
             if(getResources().getResourceEntryName(parent.getId()).equals("gridViewItems"))
             {
+                if(ableRemove)
+                {
+                    int toRemove = position;
+                    currentOrder.removeLine(position);
+                    setCurrentOrderAdapter();
+
+                }
+
                 if(navigation==0)
                 {
                     Recipe_Category[] selectedRecipeCategory= new Recipe_Category[1];
                     selectedRecipeCategory[0]=recipeCategoryArrayList.get(position);
                     GetRecipeSubCategory getRecipeSubCategory = new GetRecipeSubCategory();
+                    spinner.setVisibility(View.VISIBLE);
                     getRecipeSubCategory.execute(selectedRecipeCategory);
                     navigation++;
                 }
@@ -102,6 +136,7 @@ public class CreateOrder extends AppCompatActivity {
                     Recipe_SubCategory[] selectedRecipeSubCategory= new Recipe_SubCategory[1];
                     selectedRecipeSubCategory[0]=recipeSubCategoryArrayList.get(position);
                     GetRecipe getRecipe = new GetRecipe();
+                    spinner.setVisibility(View.VISIBLE);
                     getRecipe.execute(selectedRecipeSubCategory);
                     navigation++;
                 }
@@ -111,7 +146,7 @@ public class CreateOrder extends AppCompatActivity {
                     Order_Line newLine = new Order_Line();
                     newLine.setLine(selectedRecipe);
                     newLine.setQuantity(1);
-                    newLine.setOrderId(currentOrder.getOrder_id());
+                    newLine.setOrder_Id(currentOrder.getOrder_id());
                     currentOrder.addLine(newLine);
                     Toast.makeText(getActivity(), "Item: "+selectedRecipe.getName()+" added to Order",
                             Toast.LENGTH_LONG).show();
@@ -166,6 +201,17 @@ public class CreateOrder extends AppCompatActivity {
                     navigation--;
                     setRecipeSubCategoryAdapter(); //Return to subcategory view
                 }
+                else if(navigation==3)
+                {
+                    navigation--;
+                    setRecipeAdapter();
+                }
+                return true;
+            case R.id.action_order:
+                //Intent intentOV = new Intent(this, OrderView.class);
+                //startActivity(intentOV);
+                navigation++;
+                setCurrentOrderAdapter();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -197,6 +243,7 @@ public class CreateOrder extends AppCompatActivity {
                 }
             }
             recipeArrayList = validRecipes;
+            spinner.setVisibility(View.GONE);
             setRecipeAdapter();
         }
 
@@ -214,6 +261,7 @@ public class CreateOrder extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Recipe_Category> result) {
             recipeCategoryArrayList = result;
+            spinner.setVisibility(View.GONE);
             setRecipeCategoryAdapter();
         }
 
@@ -241,6 +289,7 @@ public class CreateOrder extends AppCompatActivity {
                 }
             }
             recipeSubCategoryArrayList = validSubCats;
+            spinner.setVisibility(View.GONE);
             setRecipeSubCategoryAdapter();
         }
 

@@ -28,9 +28,10 @@ public class ObjectHandler {
     //Fetches all orders for this location and places in ordersArrayList
     public void fetchOrders(MobileServiceClient mClient, CloudDBConnector cloudDB)
     {
-        List<Order> orders=cloudDB.getOrders(mClient, 1);
+        List<Order> orders=cloudDB.getOrders(mClient, 0);
         orderArrayList.clear();
-
+        Log.d("Tests", orders.get(0).getOrder_id());
+//        Log.d("Tests2", orders.get(0).getLine(0).getOrder_Id());
         if(orders!=null)
         {
             for (int count = 0; count < orders.size(); count++) {

@@ -11,4 +11,8 @@
         android:icon="@drawable/serviceicon"
         android:title="Home"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_order"
+        android:icon="@drawable/orderviewicon"
+        android:title="Order View"
+        app:showAsAction="always"/>
 </menu>

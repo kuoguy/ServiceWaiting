@@ -33,12 +33,13 @@ public class CloudDBConnector {
         {
             for (int count = 0; count < orderList.size(); count++)
             {
-                String orderId=orderList.get(count).getId();
+                String orderId=orderList.get(count).getOrder_id();
                 try {
                     orderLinesList = mClient.getTable(Order_Line.class).where().field("order").eq(orderId)
                             .execute().get();
-
-                    orderList.get(count).setLines(orderLinesList);
+                    for(int olCount=0; olCount<orderLinesList.size();olCount++)
+                        orderList.get(count).addLine(orderLinesList.get(olCount));
+                    //orderList.get(count).setLines(orderLinesList);
                     Log.d("CloudDBConnector", "id: " + orderList.get(count).getId());
                 }
                 catch(Exception e)
@@ -70,7 +71,7 @@ public class CloudDBConnector {
                             try
                             {
                                 foundRecipeLines = mClient.getTable(Recipe_Line.class).where().field("recipe_id").eq(recipeId).execute().get();
-                                Log.d("CloudDBConnector", "id: " + foundRecipeLines.get(countLines).getId() + " recipelineid: " + recipeId);
+                                Log.d("CloudDBConnector", "Recipe Line id: " + foundRecipeLines.get(countLines).getId() + " recipelineid: " + recipeId);
                                 foundRecipe.get(0).setLines(foundRecipeLines);
 
 
@@ -313,6 +314,7 @@ public class CloudDBConnector {
         orderObject.addProperty("table", Integer.toString(newOrder.getTable()));
         orderObject.addProperty("createdTime", newOrder.getCreatedTime());
         orderObject.addProperty("order_id", newOrder.getOrder_id());
+        orderObject.addProperty("status", newOrder.getStatus());
 
         try
         {
@@ -339,7 +341,7 @@ public class CloudDBConnector {
         MobileServiceJsonTable orderTable = mClient.getTable("order_line");
         JsonObject orderObject = new JsonObject();
         orderObject.addProperty("recipe", newOrder.getRecipe());
-        orderObject.addProperty("order", newOrder.getOrderId());
+        orderObject.addProperty("order", newOrder.getOrder_Id());
         orderObject.addProperty("quantity", newOrder.getQuantity());
         try
         {

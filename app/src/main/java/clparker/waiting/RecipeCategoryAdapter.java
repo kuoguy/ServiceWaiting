@@ -46,6 +46,7 @@ public class RecipeCategoryAdapter extends BaseAdapter {
 
         String nameString = itemObj.getName();
         String idString = itemObj.getId();
+        //String subcatString = itemObj.get
 
         t1.setText(nameString);
         t2.setText(idString);

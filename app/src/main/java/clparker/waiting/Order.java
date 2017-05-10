@@ -1,15 +1,21 @@
 package clparker.waiting;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+
+import static android.content.ComponentName.readFromParcel;
 
 /**
  * Created by Clown on 02/01/2017.
  */
 
 public class Order {
+
 
     private String id;
     private int location;
@@ -18,6 +24,16 @@ public class Order {
     //private String
     private Calendar created;
     private String createdTime;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    private String status="New";
 
     public String getOrder_id() {
         return order_id;
@@ -39,7 +55,17 @@ public class Order {
     public String getCreatedTime(){return createdTime;}
     public int getSize(){return lines.size();}
 
-    public void addLine(Order_Line nOrderLine){lines.add(nOrderLine);}
+    public void removeLine(int position)
+    {
+        lines.remove(position);
+    }
+
+    public void addLine(Order_Line nOrderLine)
+    {
+        if(lines==null)
+            lines=new ArrayList<Order_Line>();
+        lines.add(nOrderLine);
+    }
     public Order_Line getLine(int pos){return lines.get(pos);}
     public ArrayList<Order_Line> getLines(){return lines;}
     public void setLines(List<Order_Line> nLines)
@@ -61,6 +87,5 @@ public class Order {
         String uuid = UUID.randomUUID().toString();
         this.order_id=uuid;
     }
-
 
 }
